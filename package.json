@@ -8,7 +8,7 @@
     },
     "repository": {
       "type": "git",
-      "url": "git+https://github.com/yourusername/Eco-Pixel-Life.git"
+      "url": "https://github.com/alyssiamar/Syn_Project3_Climate_Routine"
     },
     "keywords": [
       "pygame",
@@ -17,7 +17,7 @@
       "pixel-art",
       "pygbag"
     ],
-    "author": "Your Name",
+    "author": "Alyssia Almanza",
     "license": "MIT",
     "dependencies": {},
     "devDependencies": {}
