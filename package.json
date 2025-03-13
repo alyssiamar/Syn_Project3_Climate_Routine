@@ -1,0 +1,24 @@
+{
+    "name": "eco-pixel-life",
+    "version": "1.0.0",
+    "description": "A nostalgic pixel game about eco-friendly choices",
+    "scripts": {
+      "build": "pygbag --build --ume_block 0 .",
+      "start": "python -m http.server -d build/web"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/yourusername/Eco-Pixel-Life.git"
+    },
+    "keywords": [
+      "pygame",
+      "eco",
+      "game",
+      "pixel-art",
+      "pygbag"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "dependencies": {},
+    "devDependencies": {}
+  }  
