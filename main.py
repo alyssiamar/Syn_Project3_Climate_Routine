@@ -3,6 +3,7 @@ import sys
 import time
 import os
 import math
+import asyncio
 
 # Constants
 pygame.init()
@@ -595,7 +596,7 @@ class Game:
             self.screen.blit(hint_surf, (SCREEN_WIDTH//2 - hint_surf.get_width()//2, SCREEN_HEIGHT - hint_surf.get_height() - 10))
 
     
-    def run(self):
+    async def run(self):
         running = True
         while running:
             # Handle events
@@ -613,11 +614,13 @@ class Game:
             
             # Cap the frame rate
             self.clock.tick(60)
+            
+            # Allow the browser to update (required for web deployment)
+            await asyncio.sleep(0)
         
         # Clean up when the game exits
         pygame.quit()
         sys.exit()
-
 
     def handle_event(self, event):
         if event.type == pygame.QUIT:
@@ -733,13 +736,10 @@ class Game:
         # Update the display
         pygame.display.flip()
 
-
-
-    
 if __name__ == "__main__":
     game = Game()
     try:
-        game.run()
+        asyncio.run(game.run())
     except Exception as e:
         print(f"Error: {e}")
     finally:

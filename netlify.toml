@@ -1,0 +1,3 @@
+[build]
+  publish = "build/web"
+  command = "pip install pygbag && python -m pygbag --build --ume_block 0 ."
