@@ -4,6 +4,7 @@ import time
 import os
 import math
 import asyncio
+import random
 
 # Constants
 pygame.init()
@@ -60,6 +61,46 @@ def wrap_text(text, font, max_width):
     if current_line:
         lines.append(' '.join(current_line))
     return lines
+
+async def main():
+        game = Game()
+        
+        # Show initial loading screen
+        game.draw_loading_screen(0)
+        
+        # Simulate loading progress
+        for i in range(0, 101, 5):
+            game.draw_loading_screen(i)
+            await asyncio.sleep(0.1)  # Short delay between progress updates
+        
+        # Run the game
+        try:
+            # Main game loop
+            running = True
+            while running:
+                # Handle events
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                    else:
+                        game.handle_event(event)
+                
+                # Update game state
+                game.update()
+                
+                # Render game
+                game.render()
+                
+                # Cap the frame rate
+                game.clock.tick(60)
+                
+                # Required for web deployment
+                await asyncio.sleep(0)
+                
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
+            pygame.quit()
 
 # Classes
 class Player(pygame.sprite.Sprite):
@@ -162,6 +203,46 @@ class Game:
         self.interaction_img = pygame.Surface((16, 16), pygame.SRCALPHA)
         pygame.draw.circle(self.interaction_img, WHITE, (8, 8), 8)
 
+    def draw_loading_screen(self, progress=0):
+        """Draw a custom loading screen with progress indicator"""
+        # Fill screen with a background color
+        self.screen.fill(BABY_BLUE)
+        
+        # Draw title
+        title_font = pygame.font.Font(None, 48)
+        title_surf = title_font.render("Eco Pixel Life", True, LIME_GREEN)
+        self.screen.blit(title_surf, (SCREEN_WIDTH//2 - title_surf.get_width()//2, SCREEN_HEIGHT//2 - 100))
+        
+        # Draw loading text
+        loading_text = "Loading game assets..."
+        loading_surf = self.font.render(loading_text, True, WHITE)
+        self.screen.blit(loading_surf, (SCREEN_WIDTH//2 - loading_surf.get_width()//2, SCREEN_HEIGHT//2 - 30))
+        
+        # Draw progress bar border
+        bar_width = 400
+        bar_height = 30
+        bar_x = (SCREEN_WIDTH - bar_width) // 2
+        bar_y = SCREEN_HEIGHT // 2 + 20
+        pygame.draw.rect(self.screen, WHITE, (bar_x, bar_y, bar_width, bar_height), 2)
+        
+        # Draw progress bar fill
+        fill_width = int(bar_width * (progress / 100))
+        pygame.draw.rect(self.screen, LIME_GREEN, (bar_x, bar_y, fill_width, bar_height))
+        
+        # Draw pixel art decorations
+        for i in range(10):
+            size = 15
+            x = random.randint(0, SCREEN_WIDTH - size)
+            y = random.randint(0, SCREEN_HEIGHT - size)
+            color = random.choice([PASTEL_PINK, LIME_GREEN, CORAL])
+            pygame.draw.rect(self.screen, color, (x, y, size, size))
+        
+        # Draw hint text
+        hint = "A game about making eco-friendly choices"
+        hint_surf = self.font.render(hint, True, WHITE)
+        self.screen.blit(hint_surf, (SCREEN_WIDTH//2 - hint_surf.get_width()//2, SCREEN_HEIGHT//2 + 80))
+        
+        pygame.display.flip()
 
     def create_interaction_points(self):
         # Bedroom interactions
@@ -595,33 +676,6 @@ class Game:
             self.screen.blit(hint_panel, (SCREEN_WIDTH//2 - hint_panel.get_width()//2, SCREEN_HEIGHT - hint_panel.get_height() - 5))
             self.screen.blit(hint_surf, (SCREEN_WIDTH//2 - hint_surf.get_width()//2, SCREEN_HEIGHT - hint_surf.get_height() - 10))
 
-    
-    async def run(self):
-        running = True
-        while running:
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                else:
-                    self.handle_event(event)
-            
-            # Update game state
-            self.update()
-            
-            # Render game
-            self.render()
-            
-            # Cap the frame rate
-            self.clock.tick(60)
-            
-            # Allow the browser to update (required for web deployment)
-            await asyncio.sleep(0)
-        
-        # Clean up when the game exits
-        pygame.quit()
-        sys.exit()
-
     def handle_event(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -739,7 +793,7 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     try:
-        asyncio.run(game.run())
+        asyncio.run(main())
     except Exception as e:
         print(f"Error: {e}")
     finally:
